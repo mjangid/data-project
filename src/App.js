@@ -1,166 +1,362 @@
-
-import React from 'react';
+import React, { Component } from 'react';
 import Chart from "react-google-charts";
-import './App.css';
-
-function App() {
-  return (
-    <div className="App">
-      <div style={{ display: 'flex', maxWidth: 900 }}>
-        <Chart
-          width={1200}
-          height={400}
-          chartType="ColumnChart"
-          loader={<div>Loading Chart</div>}
-          data={[
-            ['City', '2010 Population', '2000 Population'],
-            ['New York City, NY', 8175000, 8008000],
-            ['Los Angeles, CA', 3792000, 3694000],
-            ['Chicago, IL', 2695000, 2896000],
-            ['Houston, TX', 2099000, 1953000],
-            ['Philadelphia, PA', 1526000, 1517000],
-          ]}
-          options={{
-            title: 'Population of Largest U.S. Cities',
-            chartArea: { width: '30%' },
-            hAxis: {
-              title: 'Total Population',
-              minValue: 0,
-            },
-            vAxis: {
-              title: 'City',
-            },
-          }}
-          legendToggle
-        />
-        <Chart
-          width={400}
-          height={'300px'}
-          chartType="AreaChart"
-          loader={<div>Loading Chart</div>}
-          data={[
-            ['Year', 'Sales', 'Expenses'],
-            ['2013', 1000, 400],
-            ['2014', 1170, 460],
-            ['2015', 660, 1120],
-            ['2016', 1030, 540],
-          ]}
-          options={{
-            title: 'Company Performance',
-            hAxis: { title: 'Year', titleTextStyle: { color: '#333' } },
-            vAxis: { minValue: 0 },
-            // For the legend to fit, we make the chart area smaller
-            chartArea: { width: '50%', height: '70%' },
-            // lineWidth: 25
-          }}
-        />
-      </div>
-      <div style={{ display: 'flex' }}>
-        <Chart
-          width={400}
-          height={'300px'}
-          chartType="BubbleChart"
-          loader={<div>Loading Chart</div>}
-          data={[
-            ['ID', 'Life Expectancy', 'Fertility Rate', 'Region', 'Population'],
-            ['CAN', 80.66, 1.67, 'North America', 33739900],
-            ['DEU', 79.84, 1.36, 'Europe', 81902307],
-            ['DNK', 78.6, 1.84, 'Europe', 5523095],
-            ['EGY', 72.73, 2.78, 'Middle East', 79716203],
-            ['GBR', 80.05, 2, 'Europe', 61801570],
-            ['IRN', 72.49, 1.7, 'Middle East', 73137148],
-            ['IRQ', 68.09, 4.77, 'Middle East', 31090763],
-            ['ISR', 81.55, 2.96, 'Middle East', 7485600],
-            ['RUS', 68.6, 1.54, 'Europe', 141850000],
-            ['USA', 78.09, 2.05, 'North America', 307007000],
-          ]}
-          options={{
-            title:
-              'Correlation between life expectancy, fertility rate ' +
-              'and population of some world countries (2010)',
-            hAxis: { title: 'Life Expectancy' },
-            vAxis: { title: 'Fertility Rate' },
-            bubble: { textStyle: { fontSize: 11 } },
-          }}
-        />
-        <Chart
-          width={400}
-          height={300}
-          chartType="LineChart"
-          loader={<div>Loading Chart</div>}
-          data={[
-            [
-              { type: 'number', label: 'x' },
-              { type: 'number', label: 'values' },
-              { id: 'i0', type: 'number', role: 'interval' },
-              { id: 'i1', type: 'number', role: 'interval' },
-              { id: 'i2', type: 'number', role: 'interval' },
-              { id: 'i2', type: 'number', role: 'interval' },
-              { id: 'i2', type: 'number', role: 'interval' },
-              { id: 'i2', type: 'number', role: 'interval' },
-            ],
-            [1, 100, 90, 110, 85, 96, 104, 120],
-            [2, 120, 95, 130, 90, 113, 124, 140],
-            [3, 130, 105, 140, 100, 117, 133, 139],
-            [4, 90, 85, 95, 85, 88, 92, 95],
-            [5, 70, 74, 63, 67, 69, 70, 72],
-            [6, 30, 39, 22, 21, 28, 34, 40],
-            [7, 80, 77, 83, 70, 77, 85, 90],
-            [8, 100, 90, 110, 85, 95, 102, 110],
-          ]}
-          options={{
-            intervals: { style: 'sticks' },
-            legend: 'none',
-          }}
-        />
+import DatasetGChart from './DatasetGChart'
+import DatasetChart from './DatasetChart'
 
 
-        <Chart
-                  width={400}
-                  height={300}
-          chartType="ScatterChart"
-          spreadSheetUrl="https://docs.google.com/spreadsheets/d/1jN0iw0usssnsG1_oi-NXtuKfsUsGme09GsFidbqxFYA/edit#gid=0"
-          options={{
-            hAxis: {
-              format: 'short',
-            },
-            vAxis: {
-              format: 'decimal',
-              // format:'scientific'
-              // format:'long'
-              // format:'percent'
-            },
-          }}
-          rootProps={{ 'data-testid': '1' }}
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      graphQuery: 'SELECT A, H, O, Q, R, U LIMIT 5 OFFSET 8',
+      dataSourceType: 'google-sheet',
+      chartType: 'barChart',
+      urlPath: 'https://docs.google.com/spreadsheets/d/1XWJLkAwch5GXAt_7zOFDcg8Wm8Xv29_8PWuuW15qmAE',
+      chart: true
+    };
+
+    this.handleChangeUrl = this.handleChangeUrl.bind(this);
+    this.handleChangeQuery = this.handleChangeQuery.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.onDatasourceChange = this.onDatasourceChange.bind(this);
+    this.onChartChange = this.onChartChange.bind(this);
+
+
+  }
+
+
+  onChartChange(event) {
+    console.log(event.target.value)
+    this.setState({ chartType: event.target.value });
+  }
+
+  onDatasourceChange(event) {
+    console.log(event.target.value)
+    this.setState({ dataSourceType: event.target.value });
+  }
+
+  handleChangeUrl(event) {
+    this.setState({ urlPath: event.target.value });
+  }
+
+
+  handleChangeQuery(event) {
+    this.setState({ graphQuery: event.target.value });
+  }
+
+  handleSubmit(event) {
+    console.log("dataSourceType: " + this.state.dataSourceType);
+    console.log("chartType: " + this.state.chartType);
+    console.log("urlPath: " + this.state.urlPath);
+    console.log("graphQuery: " + this.state.graphQuery);
+    switch (this.state.chartType) {
+      case "barChart":
+        return "barChart";
+      case "columnChart":
+        return "columnChart";
+      case "lineChart":
+        return "lineChart";
+      case "scaterChart":
+        return "scaterChart";
+      case "pieChart":
+        return "pieChart"
+      default:
+        return "lineChart";
+    }
+  }
+
+  render() {
+    return (
+      <div id="divid">
+        <form onSubmit={this.handleSubmit}>
+          <strong>Datasource Type:</strong>
+          <br />
+          <label>
+            <input type="radio" value="rest-api" checked={this.state.dataSourceType === "rest-api"} onChange={this.onDatasourceChange} />
+            <span>Rest API</span>
+          </label>
+          <br />
+          <label>
+            <input type="radio" value="google-sheet" checked={this.state.dataSourceType === "google-sheet"} onChange={this.onDatasourceChange} />
+            <span>Google Sheet</span>
+          </label>
+          <br />
+          <label>
+            <input type="radio" value="excel-api" checked={this.state.dataSourceType === "excel-api"} onChange={this.onDatasourceChange} />
+            <span>Excel API</span>
+          </label>
+          <br />
+          <br />
+
+          <input type="text" id="urlPath" value={this.state.urlPath} onChange={this.handleChangeUrl} />
+
+          <br />
+          <br />
+          <strong>Chart Type:</strong>
+          <br />
+
+          <input type="radio" value="barChart" checked={this.state.chartType === "barChart"} onChange={this.onChartChange} />
+          <span>Bar Chart</span>
+          <br />
+          <input type="radio" value="columnChart" checked={this.state.chartType === "columnChart"} onChange={this.onChartChange} />
+          <span>Column Chart</span>
+          <br />
+          <input type="radio" value="lineChart" checked={this.state.chartType === "lineChart"} onChange={this.onChartChange} />
+          <span>Line Chart</span>
+          <br />
+          <input type="radio" value="scaterChart" checked={this.state.chartType === "scaterChart"} onChange={this.onChartChange} />
+          <span>Scatterd Chart</span>
+          <br />
+          <input type="radio" value="pieChart" checked={this.state.chartType === "pieChart"} onChange={this.onChartChange} />
+          <span>Pie Chart</span>
+          <br />
+
+          <br />
+
+          <input type="text" id="graphQuery" value={this.state.graphQuery} onChange={this.handleChangeQuery} />
+
+
+          <br />
+          <br />
+          <input type="button" value="Update Chart" onClick={this.handleSubmit} />
+          <br />
+          <br />
+        </form>
+
+
+        <DatasetChart 
+          title='Column chart for testing' 
+          description = "Column description for testing"
+          datasetUrl = "https://docs.google.com/spreadsheets/d/1XWJLkAwch5GXAt_7zOFDcg8Wm8Xv29_8PWuuW15qmAE"
+          chartType = "ColumnChart"
+          chartQury = "SELECT K,J LIMIT 5 OFFSET 8"
         />
 
+        
 
-        <Chart
-                  width={400}
-                  height={300}
 
-          chartType="ColumnChart"
-          spreadSheetUrl="https://docs.google.com/spreadsheets/d/1XWJLkAwch5GXAt_7zOFDcg8Wm8Xv29_8PWuuW15qmAE"
-          spreadSheetQueryParameters={{
-            headers: 1,
-            query: 'SELECT A, H, O, Q, R, U LIMIT 5 OFFSET 8',
-          }}
-          options={{
-            // hAxis: {
-            // format:'short'
-            // },
-            vAxis: {
-              format: 'long',
-            },
-          }}
-          rootProps={{ 'data-testid': '2' }}
-        />
+
+
       </div>
 
+
+
+
+
+    );
+  }
+}
+
+
+class MyChart extends Component {
+  constructor(props) {
+    super(props)
+  }
+
+  render() {
+    return (
+      <div> Demo 
+
+      <Chart
+        chartType="ColumnChart"
+        //spreadSheetUrl="https://docs.google.com/spreadsheets/d/1XWJLkAwch5GXAt_7zOFDcg8Wm8Xv29_8PWuuW15qmAE"
+        spreadSheetUrl= {App.state.urlPath}
+        spreadSheetQueryParameters={{
+          headers: 1,
+          query: 'SELECT A, H, O, Q, R, U LIMIT 5 OFFSET 8',
+        }}
+        options={{
+          // hAxis: {
+          // format:'short'
+          // },
+          vAxis: {
+            format: 'long',
+          },
+        }}
+        rootProps={{ 'data-testid': '2' }}
+      />
+    
+    
     </div>
-  );
+    
+    
+    );
+  }
+}
+
+class MatatikaColumnChart extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { date: new Date() };
+  }
+
+  componentDidMount() {
+  }
+
+  componentWillUnmount() {
+  }
+
+  render() {
+    return (
+      <div>
+
+        <Component
+          initialState={{ dataLoadingStatus: 'loading', chartData: [] }}
+          didMount={async function (component) {
+            const COUNTRY_CODE = 'lb'
+            const INDICATOR = 'DT.DOD.DECT.CD'
+            const response = await fetch(
+              'https://api.worldbank.org/v2/countries/' +
+              COUNTRY_CODE +
+              '/indicators/' +
+              INDICATOR +
+              '?format=json',
+            )
+            const json = await response.json()
+            const [metadata, data] = json
+            {
+              /* console.log(data,metadata) */
+            }
+            const columns = [
+              { type: 'date', label: 'Year' },
+              { type: 'number', label: 'Debt' },
+            ]
+            let rows = []
+            const nonNullData = data.filter(row => row.value !== null)
+            for (let row of nonNullData) {
+              const { date, value } = row
+              rows.push([new Date(Date.parse(date)), value])
+            }
+            component.setState({
+              chartData: [columns, ...rows],
+              dataLoadingStatus: 'ready',
+            })
+          }}
+        >
+          {component => {
+            return component.state.dataLoadingStatus === 'ready' ? (
+              <Chart
+                chartType="LineChart"
+                data={component.state.chartData}
+                options={{
+                  hAxis: {
+                    format: 'yyyy',
+                  },
+                  vAxis: {
+                    format: 'short',
+                  },
+                  title: 'Debt incurred over time.',
+                }}
+                rootProps={{ 'data-testid': '2' }}
+              />
+            ) : (
+                <div>Fetching data from API</div>
+              )
+          }}
+        </Component>
+      </div>
+    );
+  }
+}
+
+class MatatikaBarChart extends Component {
+  constructor(props) {
+    super(props);
+    //class data
+  }
+  render() {
+    return (
+
+      <div>
+        <h1>Bar Chart</h1>
+        <Component
+          initialState={{ dataLoadingStatus: 'loading', chartData: [] }}
+          didMount={async function (component) {
+            const response = await fetch(
+              'https://api.exchangeratesapi.io/latest?symbols=USD,GBP,CAD',
+            )
+            const json = await response.json()
+            const rateCurrencyNames = Object.keys(json.rates)
+            const rateCurrencyValues = Object.values(json.rates)
+            const chartData = [['Currency Name', 'Currency Rate']]
+            for (let i = 0; i < rateCurrencyNames.length; i += 1) {
+              chartData.push([rateCurrencyNames[i], rateCurrencyValues[i]])
+            }
+            component.setState({
+              dataLoadingStatus: 'ready',
+              chartData: chartData,
+            })
+          }}
+        >
+          {component => {
+            return component.state.dataLoadingStatus === 'ready' ? (
+              <Chart
+                chartType="BarChart"
+                data={component.state.chartData}
+                options={{
+                  chartArea: {
+                    width: '50%',
+                  },
+                  title: 'EUR Price',
+                }}
+                rootProps={{ 'data-testid': '1' }}
+              />
+            ) : (
+                <div>Fetching data from API</div>
+              )
+          }}
+        </Component>
+      </div>
+    );
+  }
+
+}
+
+
+class MatatikaLineChart extends Component {
+  render() {
+    return (
+      <div>
+        <h1>Line Chart</h1>
+
+        <Component
+          initialState={{ dataLoadingStatus: 'loading', chartData: [] }}
+          didMount={async function (component) {
+            const COUNTRY_CODE = 'lb'
+            const INDICATOR = 'DT.DOD.DECT.CD'
+            const response = await fetch(
+              'https://api.worldbank.org/v2/countries/' +
+              COUNTRY_CODE +
+              '/indicators/' +
+              INDICATOR +
+              '?format=json',
+            )
+            const json = await response.json()
+            const [metadata, data] = json
+            {
+              /* console.log(data,metadata) */
+            }
+            const columns = [
+              { type: 'date', label: 'Year' },
+              { type: 'number', label: 'Debt' },
+            ]
+            let rows = []
+            const nonNullData = data.filter(row => row.value !== null)
+            for (let row of nonNullData) {
+              const { date, value } = row
+              rows.push([new Date(Date.parse(date)), value])
+            }
+            component.setState({
+              chartData: [columns, ...rows],
+              dataLoadingStatus: 'ready',
+            })
+          }}
+        />
+
+
+      </div>
+    );
+  }
 }
 
 export default App;
-
-
