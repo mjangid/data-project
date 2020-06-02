@@ -21,7 +21,14 @@ class App extends React.Component {
     this.onDatasourceChange = this.onDatasourceChange.bind(this);
     this.onChartChange = this.onChartChange.bind(this);
 
+    const chartType = {
+      BarChart : "BarChart",
+      ColumnChart : "ColumnChart",
+      LineChart : "LineChart",
+      PieChart : "PieChart"
+    }
 
+    Object.freeze(chartType)
   }
 
 
@@ -124,15 +131,16 @@ class App extends React.Component {
         </form>
 
 
-        <DatasetChart 
-          title='Column chart for testing' 
-          description = "Column description for testing"
-          datasetUrl = "https://docs.google.com/spreadsheets/d/1XWJLkAwch5GXAt_7zOFDcg8Wm8Xv29_8PWuuW15qmAE"
-          chartType = "ColumnChart"
-          chartQury = "SELECT K,J LIMIT 5 OFFSET 8"
+        <DatasetGChart
+          dataset_url = 'http://127.0.0.1:5002/dataset'
+          title='Column chart for testing'
+          description="Column description for testing"
+          datasetUrl="https://docs.google.com/spreadsheets/d/1XWJLkAwch5GXAt_7zOFDcg8Wm8Xv29_8PWuuW15qmAE"
+          chartType="ColumnChart"
+          chartQury="SELECT K,J LIMIT 5 OFFSET 8"
         />
 
-        
+
 
 
 
@@ -155,31 +163,31 @@ class MyChart extends Component {
 
   render() {
     return (
-      <div> Demo 
+      <div> Demo
 
       <Chart
-        chartType="ColumnChart"
-        //spreadSheetUrl="https://docs.google.com/spreadsheets/d/1XWJLkAwch5GXAt_7zOFDcg8Wm8Xv29_8PWuuW15qmAE"
-        spreadSheetUrl= {App.state.urlPath}
-        spreadSheetQueryParameters={{
-          headers: 1,
-          query: 'SELECT A, H, O, Q, R, U LIMIT 5 OFFSET 8',
-        }}
-        options={{
-          // hAxis: {
-          // format:'short'
-          // },
-          vAxis: {
-            format: 'long',
-          },
-        }}
-        rootProps={{ 'data-testid': '2' }}
-      />
-    
-    
-    </div>
-    
-    
+          chartType="ColumnChart"
+          //spreadSheetUrl="https://docs.google.com/spreadsheets/d/1XWJLkAwch5GXAt_7zOFDcg8Wm8Xv29_8PWuuW15qmAE"
+          spreadSheetUrl={App.state.urlPath}
+          spreadSheetQueryParameters={{
+            headers: 1,
+            query: 'SELECT A, H, O, Q, R, U LIMIT 5 OFFSET 8',
+          }}
+          options={{
+            // hAxis: {
+            // format:'short'
+            // },
+            vAxis: {
+              format: 'long',
+            },
+          }}
+          rootProps={{ 'data-testid': '2' }}
+        />
+
+
+      </div>
+
+
     );
   }
 }
@@ -200,6 +208,11 @@ class MatatikaColumnChart extends React.Component {
     return (
       <div>
 
+{/* // read from api which chart library and render that component
+
+1. fetch metadata
+2. render chart 
+3. chart fetches data  */}
         <Component
           initialState={{ dataLoadingStatus: 'loading', chartData: [] }}
           didMount={async function (component) {
