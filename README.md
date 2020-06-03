@@ -1,5 +1,5 @@
 ## Run python dataservice 
-`python3 rest_api.py`
+`python3 ./service/rest_api.py`
 
 ## Run react app 
 `yarn build`
