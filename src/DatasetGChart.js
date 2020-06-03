@@ -1,72 +1,43 @@
-import React, {Component} from 'react';
+import React from 'react';
 import Chart from "react-google-charts";
 
 export default class DatasetGChart extends React.Component {
 
   constructor(props) {
-    super(props)
-    // try {
-    //   const response = fetch(this.props.dataset_url)
-    //   if (response.ok) { // if HTTP-status is 200-299
-    //     // get the response body (the method explained below)
-    //     let json = response.json();
-    //     console.log(json)
-    //   } else {
-    //     alert("HTTP-Error: " + response.status);
-    //   }
-      
-    //   console.log(this.response)
-
-    // } catch(err) {
-    // console.log(err)
-    // }
+    super();
+    this.state = { data: [] };
   }
 
-  // componentDidMount() {
-  //   console.log('dataset_url:' + this.props.dataset_url)
-  //   const response = fetch('http://jsonplaceholder.typicode.com/users')
-  //   console.log(response)
-  //   //console.log(response.json())
+  async componentDidMount() {
+    console.log('dataset_url:' + this.props.dataset_url)
     
-  //   fetch(this.props.dataset_url)
-  //   .then(res => res.json())
-  //   .then((data) => {
-  //     this.setState({ json_data: data })
-  //   })
-  //   .catch(console.log)
-  //   console.log('data:' + this.props.data)
-  //   console.log('json_data:' + this.props.json_data)
+    
+    try {
+      const response = await fetch(this.props.dataset_url);
+      if (!response.ok) {
+        throw Error(response.statusText);
+      }
+      const json = await response.json();
+      this.setState({ data: json });
+      console.log("chart_type" + this.state.data.chart_type)
+    } catch (error) {
+      console.log(error);
+    }
 
-  // }
+  }
   
   render() {
 
     return (
 
       <div>
-        <h1>Hello </h1>
-        <>
-        Test
-        <Component></Component>
-        </>
-        
+        <h2>Chart from Google spreadsheet</h2>
+      
         <Chart
-          chartType="ColumnChart"
-          spreadSheetUrl="https://docs.google.com/spreadsheets/d/1XWJLkAwch5GXAt_7zOFDcg8Wm8Xv29_8PWuuW15qmAE"
-          //spreadSheetUrl={App.state.urlPath}
-          spreadSheetQueryParameters={{
-            headers: 1,
-            query: 'SELECT A, H, O, Q, R, U LIMIT 5 OFFSET 8',
-          }}
-          options={{
-            // hAxis: {
-            // format:'short'
-            // },
-            vAxis: {
-              format: 'long',
-            },
-          }}
-          rootProps={{ 'data-testid': '2' }}
+          chartType={this.state.data.chart_type}
+          spreadSheetUrl={this.state.data.data_url}
+          spreadSheetQueryParameters={this.state.data.spreadSheetQueryParameters}
+          options={this.state.data.chart_config}
         />
 
       

@@ -16,11 +16,18 @@ CORS(app)
 
 class Dataset(Resource):
     def get(self):
+        payload = []
         json_data = {}
         chart_options = {}
         json_data['chart_library'] = 'Google Chart'
         json_data['chart_type'] = 'BarChart'
-        json_data['data_url'] = 'http://127.0.0.1:5002/data'
+        #json_data['data_url'] = 'http://127.0.0.1:5002/data'
+        json_data['data_url'] = 'https://docs.google.com/spreadsheets/d/1XWJLkAwch5GXAt_7zOFDcg8Wm8Xv29_8PWuuW15qmAE'
+
+        spreadSheetQueryParameters = {}
+        spreadSheetQueryParameters['headers'] = '1'
+        spreadSheetQueryParameters['query'] = 'SELECT A, H, O, Q, R, U LIMIT 5 OFFSET 8'
+        json_data['spreadSheetQueryParameters'] = spreadSheetQueryParameters
 
         chart_options['title'] = 'This is chart title'
         vAxis = {}
@@ -41,7 +48,9 @@ class Dataset(Resource):
         chart_options['chartArea'] = chartArea
 
         json_data['chart_config'] = chart_options
+        payload.append(json_data)
         return json_data
+        #return payload
 
 class Data(Resource):
     def get(self):
