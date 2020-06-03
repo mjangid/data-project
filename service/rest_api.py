@@ -12,7 +12,72 @@ import datetime
 app = Flask(__name__)
 api = Api(app)
 CORS(app)
-#app.config['CORS_HEADERS'] = 'application/json'
+
+
+def covid_data():
+    rows = []
+    row = {}
+    row['Country'] = 'United States'
+    row['Confirmed Case'] = 1831730
+    row['Confirmed Death'] = 106180
+    row['Confirmed Recovered'] = 463868
+    rows.append(row)
+
+    row['Country'] = 'Brazil'
+    row['Confirmed Case'] = 555383
+    row['Confirmed Death'] = 31199
+    row['Confirmed Recovered'] = 223638
+    rows.append(row)
+    
+    row['Country'] = 'Russia'
+    row['Confirmed Case'] = 423741
+    row['Confirmed Death'] = 5037
+    row['Confirmed Recovered'] = 186602
+    rows.append(row)
+
+    row['Country'] = 'United Kingdom'
+    row['Confirmed Case'] = 277985
+    row['Confirmed Death'] = 39369
+    row['Confirmed Recovered'] = 1224
+    rows.append(row)
+
+    row['Country'] = 'Spain'
+    row['Confirmed Case'] = 239932
+    row['Confirmed Death'] = 27127
+    row['Confirmed Recovered'] = 150376
+    rows.append(row)
+
+    row['Country'] = 'Italy'
+    row['Confirmed Case'] = 233515
+    row['Confirmed Death'] = 33530
+    row['Confirmed Recovered'] = 160092
+    rows.append(row)
+
+    row['Country'] = 'India'
+    row['Confirmed Case'] = 207615
+    row['Confirmed Death'] = 5815
+    row['Confirmed Recovered'] = 100285
+    rows.append(row)
+
+    row['Country'] = 'France'
+    row['Confirmed Case'] = 188450
+    row['Confirmed Death'] = 28940
+    row['Confirmed Recovered'] = 68930
+    rows.append(row)
+
+    row['Country'] = 'Germany'
+    row['Confirmed Case'] = 182370
+    row['Confirmed Death'] = 8551
+    row['Confirmed Recovered'] = 166609
+    rows.append(row)
+
+    row['Country'] = 'Peru'
+    row['Confirmed Case'] = 170039
+    row['Confirmed Death'] = 4634
+    row['Confirmed Recovered'] = 69257
+    rows.append(row)
+
+    return rows
 
 class Dataset(Resource):
     def get(self):
@@ -54,8 +119,7 @@ class Dataset(Resource):
 
 class Data(Resource):
     def get(self):
-        json_data = {}
-        return json_data
+        return covid_data()
 
 api.add_resource(Dataset, '/dataset')
 #api.add_resource(Data, '/barchart')
